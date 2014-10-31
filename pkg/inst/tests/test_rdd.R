@@ -33,6 +33,21 @@ test_that("mapPartitions on RDD", {
   expect_equal(actual, list(15, 40))
 })
 
+test_that("Filter on RDD", {
+  filtered.rdd <- Filter(function(x) { x %% 2 == 0 }, rdd)
+  actual <- collect(filtered.rdd)
+  expect_equal(actual, list(2, 4, 6, 8, 10))
+  
+  filtered.rdd <- Filter(function(x) { x[[2]] < 0 }, intRdd)
+  actual <- collect(filtered.rdd)
+  expect_equal(actual, list(list(1L, -1)))
+  
+  # Filter out all elements.
+  filtered.rdd <- Filter(function(x) { x > 10 }, rdd)
+  actual <- collect(filtered.rdd)
+  expect_equal(actual, list())
+})
+
 test_that("lookup on RDD", {
   vals <- lookup(intRdd, 1L)
   expect_equal(vals, list(-1, 200))
@@ -177,4 +192,14 @@ test_that("distinct() on RDDs", {
   uniques <- distinct(rdd.rep2)
   actual <- sort(unlist(collect(uniques)))
   expect_equal(actual, nums)
+})
+
+test_that("maximum() on RDDs", {
+  max <- maximum(rdd)
+  expect_equal(max, 10)
+})
+
+test_that("minimum() on RDDs", {
+  min <- minimum(rdd)
+  expect_equal(min, 1)
 })
