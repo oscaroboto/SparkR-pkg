@@ -23,7 +23,7 @@ connExists <- function(env) {
 
 # Stop the Spark context.
 # Also terminates the backend this R session is connected to
-sparkR.stop <- function(env=.sparkREnv) {
+sparkR.stop <- function(env = .sparkREnv) {
   cat("Stopping SparkR\n")
 
   if (!connExists(env)) {
@@ -43,6 +43,7 @@ sparkR.stop <- function(env=.sparkREnv) {
   conn <- get(".sparkRCon", env)
   close(conn)
   rm(".sparkRCon", envir = env)
+  rm(".sparkRjsc", envir = env)
 
   # Finally, sleep for 1 sec to let backend finish exiting.
   # Without this we get port conflicts in RStudio when we try to 'Restart R'.
