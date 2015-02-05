@@ -23,7 +23,7 @@ connExists <- function(env) {
 
 # Stop the Spark context.
 # Also terminates the backend this R session is connected to
-sparkR.stop <- function(env) {
+sparkR.stop <- function(env=.sparkREnv) {
   cat("Stopping SparkR\n")
 
   if (!connExists(env)) {
