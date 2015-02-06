@@ -15,7 +15,7 @@ sparkR.onLoad <- function(libname, pkgname) {
 # backend and FALSE otherwise
 connExists <- function(env) {
   tryCatch({
-    exists(".sparkRCon", envir = env) && isOpen(env[[".sparkRCon"]])
+    !exists(".sparkRCon", envir = env) || (exists(".sparkRCon", envir = env) && isOpen(env[[".sparkRCon"]]))
   }, error = function(err) {
     return(FALSE)
   })
@@ -39,12 +39,14 @@ sparkR.stop <- function(env = .sparkREnv) {
     rm(".sparkRjsc", envir = env)
   }
 
-  callJStatic("SparkRHandler", "stopBackend")
-  # Also close the connection and remove it from our env
-  conn <- get(".sparkRCon", env)
-  close(conn)
-  rm(".sparkRCon", envir = env)
-
+  if(exists(".sparkRCon", envir = env)){
+    callJStatic("SparkRHandler", "stopBackend")
+    # Also close the connection and remove it from our env
+    conn <- get(".sparkRCon", env)
+    close(conn)
+    rm(".sparkRCon", envir = env)
+  }
+  
   # Finally, sleep for 1 sec to let backend finish exiting.
   # Without this we get port conflicts in RStudio when we try to 'Restart R'.
   Sys.sleep(1)
