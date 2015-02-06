@@ -45,11 +45,11 @@ sparkR.stop <- function(env = .sparkREnv) {
     conn <- get(".sparkRCon", env)
     close(conn)
     rm(".sparkRCon", envir = env)
+    # Finally, sleep for 1 sec to let backend finish exiting.
+    # Without this we get port conflicts in RStudio when we try to 'Restart R'.
+    Sys.sleep(1)
   }
   
-  # Finally, sleep for 1 sec to let backend finish exiting.
-  # Without this we get port conflicts in RStudio when we try to 'Restart R'.
-  Sys.sleep(1)
 }
 
 #' Initialize a new Spark Context.
