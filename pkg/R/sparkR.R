@@ -15,7 +15,7 @@ sparkR.onLoad <- function(libname, pkgname) {
 # backend and FALSE otherwise
 connExists <- function(env) {
   tryCatch({
-    !exists(".sparkRCon", envir = env) || (exists(".sparkRCon", envir = env) && isOpen(env[[".sparkRCon"]]))
+    (exists(".sparkRCon", envir = env) && !isOpen(env[[".sparkRCon"]])
   }, error = function(err) {
     return(FALSE)
   })
