@@ -31,12 +31,12 @@ sparkR.stop <- function(env = .sparkREnv) {
     # to the backend, so we can shut it down.
     tryCatch({
       connectBackend("localhost", .sparkREnv$sparkRBackendPort)
-    },error = function(err){
-      cat("Error in Connection: Use sparkR.init() to Restart SparkR\n")
-    },warning = function(war){
-      cat("No Connection Found: Use sparkR.init() to Restart SparkR\n")
+    }, error = function(err) {
+      cat("Error in Connection: Use sparkR.init() to restart SparkR\n")
+    }, warning = function(war) {
+      cat("No Connection Found: Use sparkR.init() to restart SparkR\n")
     })
-  }
+  } 
 
   if (exists(".sparkRjsc", envir = env)) {
     cat("Stopping SparkR\n")
