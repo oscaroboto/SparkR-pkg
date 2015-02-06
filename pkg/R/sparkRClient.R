@@ -4,7 +4,7 @@
 # if one doesn't already exist
 connectBackend <- function(hostname, port, timeout = 6000) {
   if (exists(".sparkRcon", envir = .sparkREnv)) {
-    if(isOpen(env[[".sparkRCon"]]))){
+    if(isOpen(env[[".sparkRCon"]])){
       cat("SparkRBackend client connection already exists\n")
       return(get(".sparkRcon", envir = .sparkREnv))
     }
