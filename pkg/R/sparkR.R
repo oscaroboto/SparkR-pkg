@@ -15,7 +15,7 @@ sparkR.onLoad <- function(libname, pkgname) {
 # backend and FALSE otherwise
 connExists <- function(env) {
   tryCatch({
-    !exists(".sparkRCon", envir = env) || (exists(".sparkRCon", envir = env) && isOpen(env[[".sparkRCon"]]))
+    exists(".sparkRCon", envir = env) && isOpen(env[[".sparkRCon"]])
   }, error = function(err) {
     return(FALSE)
   })
@@ -24,16 +24,22 @@ connExists <- function(env) {
 # Stop the Spark context.
 # Also terminates the backend this R session is connected to
 sparkR.stop <- function(env = .sparkREnv) {
-  cat("Stopping SparkR\n")
 
   if (!connExists(env)) {
     # When the workspace is saved in R, the connections are closed
     # *before* the finalizer is run. In these cases, we reconnect
     # to the backend, so we can shut it down.
-    connectBackend("localhost", .sparkREnv$sparkRBackendPort)
+    tryCatch({
+      connectBackend("localhost", .sparkREnv$sparkRBackendPort)
+    },error = function(err){
+      cat("Error in Connection: Use sparkR.init() to Restart SparkR\n")
+    },warning = function(war){
+      cat("No Connection Found: Use sparkR.init() to Restart SparkR\n")
+    })
   }
 
   if (exists(".sparkRjsc", envir = env)) {
+    cat("Stopping SparkR\n")
     sc <- get(".sparkRjsc", envir = env)
     callJMethod(sc, "stop")
     rm(".sparkRjsc", envir = env)
