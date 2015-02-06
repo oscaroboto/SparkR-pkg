@@ -36,6 +36,7 @@ sparkR.stop <- function(env = .sparkREnv) {
   if (exists(".sparkRjsc", envir = env)) {
     sc <- get(".sparkRjsc", envir = env)
     callJMethod(sc, "stop")
+    rm(".sparkRjsc", envir = env)
   }
 
   callJStatic("SparkRHandler", "stopBackend")
@@ -43,7 +44,6 @@ sparkR.stop <- function(env = .sparkREnv) {
   conn <- get(".sparkRCon", env)
   close(conn)
   rm(".sparkRCon", envir = env)
-  rm(".sparkRjsc", envir = env)
 
   # Finally, sleep for 1 sec to let backend finish exiting.
   # Without this we get port conflicts in RStudio when we try to 'Restart R'.
