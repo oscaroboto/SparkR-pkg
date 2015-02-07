@@ -38,14 +38,14 @@ sparkR.stop <- function(env = .sparkREnv) {
     })
   } 
 
-  if (exists(".sparkRjsc", envir = env)) {
-    cat("Stopping SparkR\n")
-    sc <- get(".sparkRjsc", envir = env)
-    callJMethod(sc, "stop")
-    rm(".sparkRjsc", envir = env)
-  }
-
   if (exists(".sparkRCon", envir = env)) {
+    cat("Stopping SparkR\n")
+    if (exists(".sparkRjsc", envir = env)) {
+      sc <- get(".sparkRjsc", envir = env)
+      callJMethod(sc, "stop")
+      rm(".sparkRjsc", envir = env)
+    }
+  
     callJStatic("SparkRHandler", "stopBackend")
     # Also close the connection and remove it from our env
     conn <- get(".sparkRCon", env)
